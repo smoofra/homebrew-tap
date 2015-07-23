@@ -12,8 +12,6 @@ class Rtags < Formula
 
   head "https://github.com/Andersbakken/rtags.git"
 
-  patch :DATA
-
   depends_on "cmake" => :build
   depends_on "llvm" => "with-clang"
   depends_on "openssl"
@@ -26,6 +24,9 @@ class Rtags < Formula
     # we use brew's LLVM instead of the macosx llvm because the macosx one
     # doesn't include libclang.
     ENV.prepend_path "PATH", "#{opt_libexec}/llvm/bin"
+
+    # Homebrew llvm libc++.dylib doesn't correctly reexport libc++abi
+    ENV.append("LDFLAGS", '-lc++abi')
 
     mkdir "build" do
       args = std_cmake_args
@@ -41,17 +42,3 @@ class Rtags < Formula
     system "sh", "-c", "rc >/dev/null --help  ; test $? == 1"
   end
 end
-
-__END__
-diff --git a/compiler.cmake b/compiler.cmake
-index 6448cc4..d0cc029 100644
---- a/src/rct/compiler.cmake
-+++ b/src/rct/compiler.cmake
-@@ -10,6 +10,7 @@ endif()
- if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-   add_definitions(-D_DARWIN_UNLIMITED_SELECT)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++abi")
- else ()
-   if (NOT CMAKE_SYSTEM_NAME MATCHES "CYGWIN")
-     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")

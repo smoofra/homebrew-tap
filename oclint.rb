@@ -15,9 +15,10 @@ class Oclint < Formula
   depends_on "cmake" => :build
   depends_on "llvm" => "with-clang"
 
-  patch :DATA
-
   def install
+    # Homebrew llvm libc++.dylib doesn't correctly reexport libc++abi
+    ENV.append("LDFLAGS", '-lc++abi')
+
     (buildpath/"oclint-xcodebuild").install resource("oclint-xcodebuild")
     bin.install "oclint-xcodebuild/oclint-xcodebuild"
 
@@ -27,21 +28,3 @@ class Oclint < Formula
     system "cp", "-a", "./build/oclint-release/", "#{prefix}/"
   end
 end
-
-
-__END__
-diff --git a/oclint-core/cmake/OCLintConfig.cmake b/oclint-core/cmake/OCLintConfig.cmake
-index ebf7292..6b61de6 100644
---- a/oclint-core/cmake/OCLintConfig.cmake
-+++ b/oclint-core/cmake/OCLintConfig.cmake
-@@ -6,7 +6,9 @@ IF (${CMAKE_SYSTEM_NAME} MATCHES "Win")
- ELSE()
-     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti -fcolor-diagnostics -Wno-c++11-extensions -fPIC")
- ENDIF()
--SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -fno-rtti")
-+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -lc++abi -fno-rtti")
-+
-+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -lc++abi")
-
- IF(APPLE)
-     SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
