@@ -1,14 +1,14 @@
 class Rtags < Formula
   homepage "https://github.com/Andersbakken/rtags"
 
-  # stable do
-  #   url "https://github.com/Andersbakken/rtags/archive/v2.0.tar.gz"
-  #   sha256 "36733945ea34517903a0e5b800b06a41687ee25d3ab360072568523e5d610d6f"
+  stable do
+    url "https://github.com/Andersbakken/rtags/archive/v2.0.tar.gz"
+    sha256 "36733945ea34517903a0e5b800b06a41687ee25d3ab360072568523e5d610d6f"
 
-  #   resource "rct" do
-  #     url "https://github.com/Andersbakken/rct.git", :revision => "10700c615179f07d4832d459e6453eed736cfaef"
-  #   end
-  # end
+    resource "rct" do
+      url "https://github.com/Andersbakken/rct.git", :revision => "10700c615179f07d4832d459e6453eed736cfaef"
+    end
+  end
 
   head "https://github.com/Andersbakken/rtags.git"
 
